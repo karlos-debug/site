@@ -1,0 +1,19 @@
+name: Deploy site to nginx instance on olifurz
+
+on:
+  push:
+    branches: [ main ]
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Sync files with rsync
+        run: |
+          sudo rsync -av --delete ./ /var/www/html/ \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude '.gitignore'
