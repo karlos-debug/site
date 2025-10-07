@@ -1,4 +1,4 @@
-name: Deploy site to nginx instance on olifurz
+name: Deploy site to nginx instance on karlos.olifurz.com
 
 on:
   push:
@@ -8,12 +8,15 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Sync files with rsync
-        run: |
-          sudo rsync -av --delete ./ /var/www/html/ \
-            --exclude '.git/' \
-            --exclude '.github/' \
-            --exclude '.gitignore'
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build 11ty site
+        run: npm run build
+      
+      - name: Deploy to server
+        run: rsync -av --delete ./_site/ /var/www/html/
+
